@@ -5,9 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8fd57e2e87114335804fa4cab79c39ed" Name="Diagram1" ZoomLevel="87">
-        <EntityTypeShape EntityType="TranslateAppModel.Favorite" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TranslateAppModel.Word" Width="1.5" PointX="0.75" PointY="0.875" />
-        <AssociationConnector Association="TranslateAppModel.FK_Favorites_Words" />
+        <EntityTypeShape EntityType="TranslateAppModel.Word" Width="1.5" PointX="0.75" PointY="1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

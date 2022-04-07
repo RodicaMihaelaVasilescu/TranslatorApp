@@ -29,15 +29,6 @@ namespace TranslateApp.Controls
       InitializeComponent();
       viewModel = new HomepageViewModel();
       DataContext = viewModel;
-      viewModel.LoadData();
-    }
-
-    private void WordList_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
-    {
-    }
-
-    private void WordList_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
     }
 
     private void WordList_KeyDown(object sender, KeyEventArgs e)
@@ -61,6 +52,43 @@ namespace TranslateApp.Controls
         }
         u.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
       }
+    }
+
+
+    private void FavoriteButton_Click(object sender, RoutedEventArgs e)
+    {
+      var item = WordList.SelectedItem as WordModel;
+      if (item != null)
+      {
+        viewModel.MarkAsFavorite(item);
+      }
+    }
+
+    private void AllFavoritesButton_Click(object sender, RoutedEventArgs e)
+    {
+      viewModel.ShowAllFavorites = !viewModel.ShowAllFavorites;
+    }
+
+    private void DeleteItemButton_Click(object sender, RoutedEventArgs e)
+    {
+      var item = WordList.SelectedItem as WordModel;
+      if (item == null)
+      {
+        return;
+      }
+      const string message =
+        "Are you sure that you would like to close the form?";
+      const string caption = "Form Closing";
+      var result = System.Windows.MessageBox.Show(message, caption,
+                                   MessageBoxButton.OKCancel);
+
+      // If the no button was pressed ...
+      if (result == MessageBoxResult.OK)
+      {
+        // cancel the closure of the form.
+        viewModel.DeleteItem(item);
+      }
+
     }
   }
 }

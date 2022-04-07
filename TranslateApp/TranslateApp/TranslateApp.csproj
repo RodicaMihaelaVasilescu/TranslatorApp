@@ -49,7 +49,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -86,9 +88,6 @@
     </Compile>
     <Compile Include="Controls\HomepageControl.xaml.cs">
       <DependentUpon>HomepageControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Database\Favorite.cs">
-      <DependentUpon>TranslateAppDatabase.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\TranslateAppDatabase.Context.cs">
       <AutoGen>True</AutoGen>
@@ -161,6 +160,9 @@
       <DependentUpon>TranslateAppDatabase.edmx</DependentUpon>
       <LastGenOutput>TranslateAppDatabase.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\delete_icon.png" />
+    <Resource Include="Resources\isNotFavorite.png" />
+    <Resource Include="Resources\isFavorite.png" />
     <Resource Include="Resources\background.jpg" />
   </ItemGroup>
   <ItemGroup />

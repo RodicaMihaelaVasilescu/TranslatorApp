@@ -5,8 +5,6 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:TranslateApp.Controls"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
   mc:Ignorable="d">
   <UserControl.Resources>
     <Style x:Key="CellStyle" TargetType="{x:Type DataGridCell}">
@@ -19,6 +17,19 @@
           <Setter Property="Background" Value="DarkBlue" />
         </Trigger>
       </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RemoveButtonHighlight" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Background="{TemplateBinding Background}">
+              <ContentPresenter />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
 
     <Style x:Key="ElementStyle">
@@ -55,17 +66,18 @@
 
   </UserControl.Resources>
 
-  <Grid Margin="5">
+  <Grid Margin="30,30,30,30">
     <Grid.RowDefinitions>
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="5*" />
+      <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
     <TextBlock
       Grid.Row="0"
-      Margin="0,5,0,0"
+      Margin="0"
       VerticalAlignment="Bottom"
       Background="White"
       FontSize="50"
@@ -73,31 +85,66 @@
 
     <TextBlock
       Grid.Row="0"
-      Margin="0,0"
+      Margin="0"
       VerticalAlignment="Bottom"
       FontFamily="algerian"
       FontSize="50"
       FontStyle="Italic"
       FontWeight="Light"
+      Foreground="White"
       Text="Dictionary" />
-
-    <!--<Rectangle
-      Grid.Row="1"
-      Height="1"
-      Margin="30,5,30,0"
-      Fill="White" />-->
-
-    <TextBox
+    <Grid
       Grid.Row="2"
       Grid.Column="5"
-      Margin="0,10,0,10"
-      Background="Transparent"
-      Foreground="Gray"
-      Text="Search.." />
-
+      Margin="0,5,0,0"
+      HorizontalAlignment="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+      <TextBox
+        Background="Transparent"
+        FontSize="16"
+        Foreground="Gray"
+        Text="{Binding SearchItem, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" />
+      <Button
+        x:Name="AllFavoritesButton"
+        Grid.Row="5"
+        Grid.Column="1"
+        Width="17"
+        Height="17"
+        Margin="20,0,25,0"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="Transparent"
+        BorderThickness="0"
+        Click="AllFavoritesButton_Click"
+        Cursor="Hand"
+        Style="{StaticResource RemoveButtonHighlight}">
+        <Image
+          Name="ButtonImage"
+          Width="17"
+          Height="17"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Stretch="Fill">
+          <Image.Style>
+            <Style TargetType="{x:Type Image}">
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ShowAllFavorites, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
+                  <Setter Property="Source" Value="pack://application:,,,/TranslateApp;component/Resources/isFavorite.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ShowAllFavorites, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="False">
+                  <Setter Property="Source" Value="pack://application:,,,/TranslateApp;component/Resources/isNotFavorite.png" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Image.Style>
+        </Image>
+      </Button>
+    </Grid>
     <TextBlock
       Grid.Row="3"
-      MaxHeight="600"
       Margin="0"
       Background="Black"
       FontSize="50"
@@ -111,11 +158,10 @@
       HorizontalAlignment="Center"
       AutoGenerateColumns="False"
       Background="Transparent"
-      CellEditEnding="WordList_CellEditEnding"
       CellStyle="{StaticResource CellStyle}"
       ColumnHeaderStyle="{StaticResource ColumnHeaderStyle}"
       FontFamily="Andy"
-      FontSize="18"
+      FontSize="14"
       FontStyle="Italic"
       FontWeight="Normal"
       GridLinesVisibility="Horizontal"
@@ -127,7 +173,7 @@
       PreviewKeyDown="WordList_KeyDown"
       RowHeaderWidth="0"
       RowStyle="{StaticResource RowStyle}"
-      VerticalScrollBarVisibility="Auto">
+      VerticalScrollBarVisibility="Visible">
       <DataGrid.Columns>
 
         <DataGridTextColumn
@@ -139,7 +185,8 @@
           Width="*"
           Binding="{Binding PhoneticSymbols, UpdateSourceTrigger=PropertyChanged}"
           ElementStyle="{StaticResource ElementStyle}"
-          Foreground="Red"
+          FontWeight="SemiBold"
+          Foreground="red"
           Header="Phonetic" />
         <DataGridTextColumn
           Width="*"
@@ -148,31 +195,83 @@
           Header="Translation" />
         <DataGridTextColumn
           Width="*"
-          Binding="{Binding Notes}"
+          Binding="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
           ElementStyle="{StaticResource ElementStyle}"
           Header="Notes" />
 
+        <DataGridTemplateColumn Header="Delete">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Button
+                x:Name="DeleteItemButton"
+                Height="17"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="DeleteItemButton_Click"
+                Style="{StaticResource RemoveButtonHighlight}">
+                <Image
+                  Name="ButtonImage"
+                  Height="17"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Stretch="Fill">
+                  <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanBeDeleted, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                          <Setter Property="Source" Value="../../Resources/delete_icon.png" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Image.Style>
+                </Image>
+              </Button>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+
+        <DataGridTemplateColumn Header="Fav.">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Button
+                x:Name="FavoriteButton"
+                Height="17"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="FavoriteButton_Click"
+                Style="{StaticResource RemoveButtonHighlight}">
+                <Image
+                  Name="ButtonImage"
+                  Height="17"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Stretch="Fill">
+                  <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
+                          <Setter Property="Source" Value="pack://application:,,,/TranslateApp;component/Resources/isFavorite.png" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="False">
+                          <Setter Property="Source" Value="pack://application:,,,/TranslateApp;component/Resources/isNotFavorite.png" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Image.Style>
+                </Image>
+              </Button>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
       </DataGrid.Columns>
-
     </DataGrid>
-    <StackPanel Grid.Row="4" Margin="0,0,0,0">
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="3*" />
-          <ColumnDefinition Width="4*" />
-          <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
-        </Grid.RowDefinitions>
 
-      </Grid>
-    </StackPanel>
+
   </Grid>
 </UserControl>

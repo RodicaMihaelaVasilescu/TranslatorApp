@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace TranslateApp.Models
 {
-  public class WordModel/* : BaseModel*/
-
+  public class WordModel
   {
-    private string _translatedText;
 
     public int Id { get; set; }
     public string OriginalText { get; set; }
@@ -20,11 +18,7 @@ namespace TranslateApp.Models
     public string Adjectives { get; set; }
     public string Phrasals { get; set; }
     public string Notes { get; set; }
-
-    public List<string> NounsList { get; set; }
-    public List<string> VerbsList { get; set; }
-    public List<string> AdjectivesList { get; set; }
-    public List<string> PhrasalsList { get; set; }
-    public List<string> ExpressionsList { get; set; }
+    public bool IsFavorite { get; set; }
+    public bool CanBeDeleted { get; set; }
   }
 }

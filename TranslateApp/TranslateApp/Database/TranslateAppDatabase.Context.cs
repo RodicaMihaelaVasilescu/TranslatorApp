@@ -25,7 +25,6 @@ namespace TranslateApp.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Favorite> Favorites { get; set; }
         public virtual DbSet<Word> Words { get; set; }
     }
 }
