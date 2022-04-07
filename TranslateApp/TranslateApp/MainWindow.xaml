@@ -12,6 +12,9 @@
   WindowState="Maximized"
   mc:Ignorable="d">
   <Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="pack://application:,,,/TranslateApp;component/Resources/background.jpg" />
+    </Grid.Background>
     <controls:HomepageControl x:Name="HomepageControl" />
   </Grid>
 </Window>

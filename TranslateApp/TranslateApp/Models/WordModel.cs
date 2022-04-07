@@ -19,7 +19,7 @@ namespace TranslateApp.Models
     public string Verbs { get; set; }
     public string Adjectives { get; set; }
     public string Phrasals { get; set; }
-    public string Expressions { get; set; }
+    public string Notes { get; set; }
 
     public List<string> NounsList { get; set; }
     public List<string> VerbsList { get; set; }

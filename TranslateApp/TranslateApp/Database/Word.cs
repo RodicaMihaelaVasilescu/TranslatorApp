@@ -20,6 +20,7 @@ namespace TranslateApp.Database
         public string FromLanguage { get; set; }
         public string ToLanguage { get; set; }
         public string PhoneticSymbols { get; set; }
+        public string Notes { get; set; }
     
         public virtual Favorite Favorite { get; set; }
     }

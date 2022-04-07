@@ -22,6 +22,7 @@
           <Property Name="FromLanguage" Type="nvarchar" MaxLength="50" />
           <Property Name="ToLanguage" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneticSymbols" Type="nvarchar(max)" />
+          <Property Name="Notes" Type="nvarchar(max)" />
         </EntityType>
         <Association Name="FK_Favorites_Words">
           <End Role="Words" Type="Self.Words" Multiplicity="1" />
@@ -74,6 +75,7 @@
           <Property Name="ToLanguage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PhoneticSymbols" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Favorite" Relationship="TranslateAppModel.FK_Favorites_Words" FromRole="Word" ToRole="Favorite" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Favorites_Words">
           <End Type="TranslateAppModel.Word" Role="Word" Multiplicity="1" />
@@ -104,6 +106,7 @@
           <EntitySetMapping Name="Words">
             <EntityTypeMapping TypeName="TranslateAppModel.Word">
               <MappingFragment StoreEntitySet="Words">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="PhoneticSymbols" ColumnName="PhoneticSymbols" />
                 <ScalarProperty Name="ToLanguage" ColumnName="ToLanguage" />
                 <ScalarProperty Name="FromLanguage" ColumnName="FromLanguage" />

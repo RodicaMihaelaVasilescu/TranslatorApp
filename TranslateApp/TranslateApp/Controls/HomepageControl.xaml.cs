@@ -34,38 +34,10 @@ namespace TranslateApp.Controls
 
     private void WordList_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
     {
-      // Only act on Commit
-      //var context = new DictionaryEntities();
-
-      //if (e.EditAction == DataGridEditAction.Commit)
-
-      //{
-      //  var c = e.Row.DataContext as WordModel;
-      //  var x = context.Words.Where(w => w.Word_ID == c.ID);
-      //  x = new Word
-      //  {
-      //    Word_ID = 
-      //  };
-
-      //  context.Save();
-
-
     }
 
     private void WordList_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
-      // Only act on Commit
-      //var context = new DictionaryEntities();
-
-      //if (e.EditAction == DataGridEditAction.Commit)
-
-      //{
-      //  var c = e.Row.DataContext as WordModel;
-      //  var x = context.Words.Where(w => w.Word_ID == c.ID);
-
-
-      //  context.SaveChanges();
-      //}
     }
 
     private void WordList_KeyDown(object sender, KeyEventArgs e)
@@ -75,7 +47,18 @@ namespace TranslateApp.Controls
       {
         e.Handled = true;
         var item = WordList.SelectedItem as WordModel;
-        viewModel.SaveChangesToDatabase(item);
+        if (item != null)
+        {
+          if (item.Id == 0)
+          {
+            viewModel.AddLineInDatabase(item);
+            WordList.ScrollIntoView(WordList.Items[WordList.Items.Count - 1]);
+          }
+          else
+          {
+            viewModel.SaveChangesToDatabase(item);
+          }
+        }
         u.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
       }
     }

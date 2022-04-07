@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using TranslateApp.Database;
+using TranslateApp.Utils;
 using TranslateApp.Models;
 
 namespace TranslateApp.ViewModels
@@ -16,6 +17,7 @@ namespace TranslateApp.ViewModels
   {
     private TranslateAppEntities _context;
     private ObservableCollection<WordModel> wordList;
+
     public ObservableCollection<WordModel> WordList
     {
       get { return wordList; }
@@ -29,32 +31,13 @@ namespace TranslateApp.ViewModels
         OnPropertyChanged();
       }
     }
+
     public HomepageViewModel()
     {
       _context = new TranslateAppEntities();
       RefreshList();
     }
 
-    public String Translate(String word)
-    {
-      var toLanguage = "ro";//English  
-      var fromLanguage = "en";//Deutsch  
-      var url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={fromLanguage}&tl={toLanguage}&dt=t&q={HttpUtility.UrlEncode(word)}";
-      var webClient = new WebClient
-      {
-        Encoding = System.Text.Encoding.UTF8
-      };
-      var result = webClient.DownloadString(url);
-      try
-      {
-        result = result.Substring(4, result.IndexOf("\"", 4, StringComparison.Ordinal) - 4);
-        return result;
-      }
-      catch
-      {
-        return "Error";
-      }
-    }
     public void LoadData()
     {
       var wordList = new ObservableCollection<Word>(_context.Words.ToList());
@@ -74,45 +57,62 @@ namespace TranslateApp.ViewModels
 
     }
 
-    public void SaveChangesToDatabase(WordModel word)
+    public bool SaveChangesToDatabase(WordModel word)
     {
-      if (_context.Words.Any(w => w.OriginalText == word.OriginalText))
+      var dbItem = _context.Words.FirstOrDefault(w => w.Word_Id == word.Id);
+      if (dbItem == null)
       {
-        return;
+        //the word does not exist
+        return false;
       }
 
-      if (word.Id != 0)
+      try
       {
-        var dbItem = _context.Words.FirstOrDefault(w => w.Word_Id == word.Id);
         dbItem.OriginalText = word.OriginalText;
         dbItem.PhoneticSymbols = word.PhoneticSymbols;
         dbItem.TranslatedText = word.TranslatedText;
         _context.SaveChanges();
       }
-      else
+      catch
       {
-        if(string.IsNullOrEmpty(word.TranslatedText))
-        {
-          word.TranslatedText = Translate(word.OriginalText);
-        }
-
-        _context.Words.Add(new Word
-        {
-          OriginalText = word.OriginalText,
-          PhoneticSymbols = word.PhoneticSymbols,
-          TranslatedText = word.TranslatedText
-        });
-        _context.SaveChanges();
-        RefreshList();
+        return false;
       }
+
+      return true;
     }
 
-    private void RefreshList()
+    public bool AddLineInDatabase(WordModel word)
+    {
+      if (string.IsNullOrEmpty(word.OriginalText) ||
+        _context.Words.Any(w => w.OriginalText == word.OriginalText))
+      {
+        return false;
+      }
+
+      word.TranslatedText = Util.TranslateWord(word.OriginalText);
+
+      _context.Words.Add(new Word
+      {
+        OriginalText = word.OriginalText,
+        PhoneticSymbols = word.PhoneticSymbols,
+        TranslatedText = word.TranslatedText,
+        Notes = word.Notes
+      });
+
+      _context.SaveChanges();
+      RefreshList();
+      return true;
+    }
+
+    public void RefreshList()
     {
       WordList = new ObservableCollection<WordModel>(_context.Words.Select(w => new WordModel
       {
+        Id = w.Word_Id,
         OriginalText = w.OriginalText,
-        TranslatedText = w.TranslatedText
+        TranslatedText = w.TranslatedText,
+        PhoneticSymbols = w.PhoneticSymbols,
+        Notes = w.Notes
       }));
     }
   }

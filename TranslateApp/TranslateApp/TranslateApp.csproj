@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\WordModel.cs" />
+    <Compile Include="Utils\Util.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\HomepageViewModel.cs" />
     <Page Include="Controls\HomepageControl.xaml">
